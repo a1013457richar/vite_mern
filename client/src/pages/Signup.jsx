@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [userData, setuserData] = useState({});
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -29,6 +30,7 @@ const Signup = () => {
         setError(true);
         return;
       }
+      navigate("/");
       
       // console.log(data);
     } catch (err) {
