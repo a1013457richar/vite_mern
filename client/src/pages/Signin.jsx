@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signInStart, signInSuccess, signInFail } from "../redux/use/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Oauth from "../components/Oauth";
 const Signin = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -64,11 +65,13 @@ const Signin = () => {
           className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
         >
           {loading ? "Loading..." : "Sign in"}
+        
         </button>
+        <Oauth />
       </form>
       <div className="flex gap-2 mt-5">
         <p>Dont have an account? </p>
-        <Link to="/sign-in">
+        <Link to="/sign-up">
           <span className="text-blue-500">Sign up</span>
         </Link>
       </div>
