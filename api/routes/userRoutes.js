@@ -1,11 +1,11 @@
 import express from 'express';
+import { updatedUser } from '../controllers/user.controller.js';
+import { verfyToken } from '../utils/verfyToken.js';
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.json({ message: 'Hello World' });
-    }
-);
 
+
+router.post('/update/:id',verfyToken,updatedUser)
 
 export default router;

@@ -59,7 +59,7 @@ const Profile = () => {
           onChange={(e) => setImage(e.target.files[0])}
         ></input>
         <img
-          src={userData.profilePic}
+          src={formData.profilePic||userData.profilePic}
           alt="profile "
           className="h-24 w-24 self-center cursor-pointer rounded-full object-cover "
           onClick={() => fileRef.current.click()}
