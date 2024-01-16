@@ -24,7 +24,7 @@ export const signin = async (req, res, next) => {
 
   try {
     const validUser = await User.findOne({ email });
-    
+
     if (!validUser) {
       return next(errorHandler(404, "Email not found!"));
     }
@@ -50,25 +50,27 @@ export const signin = async (req, res, next) => {
 
 export const google = async (req, res, next) => {
   try {
-    
     const user = await User.findOne({ email: req.body.email });
-    
+
     if (user) {
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
         expiresIn: "1d",
       });
-      
+
       const { password: userPassword, ...rest } = user._doc;
       const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
-      res.cookie("access_token", token, {
-        httpOnly: true,
-        expires,
-      }).status(200).json(rest);
+      res
+        .cookie("access_token", token, {
+          httpOnly: true,
+          expires,
+        })
+        .status(200)
+        .json(rest);
     } else {
       const generatePassword =
         Math.random().toString(36).slice(-8) +
         Math.random().toString(36).slice(-8);
-        // console.log(req.body.name);
+      // console.log(req.body.name);
       const hashPassword = bcryptjs.hashSync(generatePassword, 10);
       const newUser = new User({
         username:
@@ -84,12 +86,25 @@ export const google = async (req, res, next) => {
       });
       const { password: userPassword, ...rest } = user._doc;
       const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
-      res.cookie("access_token", token, {
-        httpOnly: true,
-        expires,
-      }).status(200).json(rest);
+      res
+        .cookie("access_token", token, {
+          httpOnly: true,
+          expires,
+        })
+        .status(200)
+        .json(rest);
     }
   } catch (error) {
     next(error);
+  }
+};
+
+export const signout = (req, res) => {
+  try {
+    res
+      .clearCookie("access_token")
+      .json({ message: "User signout successfully!" });
+  } catch (err) {
+    next(err);
   }
 };

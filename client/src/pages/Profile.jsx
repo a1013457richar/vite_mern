@@ -14,6 +14,9 @@ import {
   deleteUserStart,
   deleteUserSuccess,
   deleteUserFail,
+  signOutUserStart,
+  signOutUserSuccess,
+  signOutUserFail,
 } from "../redux/use/userSlice";
 import { useDispatch } from "react-redux";
 
@@ -64,6 +67,7 @@ const Profile = () => {
 
   const handleDelete = async () => {
     try {
+      dispatch(deleteUserStart());
       const response = await fetch(`/api/users/delete/${userData._id}`, {
         method: "DELETE",
       });
@@ -73,7 +77,6 @@ const Profile = () => {
         return; //就不會往下執行
       }
       dispatch(deleteUserSuccess(data));
-      
     } catch (error) {
       dispatch(deleteUserFail(error.message));
     }
@@ -100,6 +103,24 @@ const Profile = () => {
       setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFail(error.message));
+    }
+  };
+
+  const handleSignout = async () => {
+    try {
+      dispatch(signOutUserStart());
+      const response = await fetch(`/api/auth/signout`, {
+        method: "GET"
+      });
+      const data = await response.json();
+      if (data.success === false) {
+        dispatch(signOutUserFail(data.message));
+        return; 
+      }
+      dispatch(signOutUserSuccess(data));
+      setUpdateSuccess(true);
+    } catch (error) {
+      dispatch(signOutUserFail(error.message));
     }
   };
 
@@ -165,7 +186,9 @@ const Profile = () => {
         <span onClick={handleDelete} className="text-red-500 cursor-pointer">
           Delete Account
         </span>
-        <span className="text-red-500 cursor-pointer">Sign out</span>
+        <span onClick={handleSignout} className="text-red-500 cursor-pointer">
+          Sign out
+        </span>
       </div>
       <p className="text-red-500  mt-5">{error ? error : ""}</p>
       <p className="text-green-500 mt-5">
