@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/auth.routes.js";
+import listingRoutes from "./routes/listing.routes.js";
 import cookieParser from "cookie-parser";
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.listen(3000, () => {
 
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/listing", listingRoutes);
 
 //middleware
 
