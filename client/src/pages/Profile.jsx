@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import {
   getStorage,
   uploadBytesResumable,
@@ -110,12 +111,12 @@ const Profile = () => {
     try {
       dispatch(signOutUserStart());
       const response = await fetch(`/api/auth/signout`, {
-        method: "GET"
+        method: "GET",
       });
       const data = await response.json();
       if (data.success === false) {
         dispatch(signOutUserFail(data.message));
-        return; 
+        return;
       }
       dispatch(signOutUserSuccess(data));
       setUpdateSuccess(true);
@@ -181,6 +182,12 @@ const Profile = () => {
         >
           {loading ? "Loading..." : "Update"}
         </button>
+        <Link
+          className="bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-95 "
+          to={"/create-listing"}
+        >
+          create listing
+        </Link>
       </form>
       <div className="flex justify-between mt-5">
         <span onClick={handleDelete} className="text-red-500 cursor-pointer">
