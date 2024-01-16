@@ -1,14 +1,12 @@
 import Listing from "../models/Listing.model.js";
-export const createList = async (req, res, next) => {
-  const listing = await Listing.create(req.body);
-  res.status(201).json(listing);
+import { errorHandler } from '../utils/error.js';
+export const createListing = async (req, res, next) => {
   try {
-    await newListing.save();
-    res.status(201).json({
-      message: "Listing created successfully!",
-    });
+    const listing = await Listing.create(req.body);
+    return res.status(201).json(listing);
+    
   } catch (error) {
+    
     next(error);
   }
 };
-//     }

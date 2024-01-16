@@ -27,7 +27,8 @@ const Profile = () => {
   const [image, setImage] = useState(undefined);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
-  const [formData, setformData] = useState({});
+  const [formData, setformData] = useState({
+  });
   const [updateSuccess, setUpdateSuccess] = useState(false); //更新成功後顯示訊息
 
   const { userData, loading } = useSelector((state) => state.user);
