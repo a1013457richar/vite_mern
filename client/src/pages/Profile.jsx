@@ -11,6 +11,9 @@ import {
   updateUserFail,
   updateUserSuccess,
   updateUserStart,
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFail,
 } from "../redux/use/userSlice";
 import { useDispatch } from "react-redux";
 
@@ -57,6 +60,23 @@ const Profile = () => {
 
   const handleChanges = (e) => {
     setformData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/users/delete/${userData._id}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+      if (data.success === false) {
+        dispatch(deleteUserStart(data.message));
+        return; //就不會往下執行
+      }
+      dispatch(deleteUserSuccess(data));
+      
+    } catch (error) {
+      dispatch(deleteUserFail(error.message));
+    }
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -142,11 +162,15 @@ const Profile = () => {
         </button>
       </form>
       <div className="flex justify-between mt-5">
-        <span className="text-red-500 cursor-pointer">Delete Account</span>
+        <span onClick={handleDelete} className="text-red-500 cursor-pointer">
+          Delete Account
+        </span>
         <span className="text-red-500 cursor-pointer">Sign out</span>
       </div>
       <p className="text-red-500  mt-5">{error ? error : ""}</p>
-      <p className="text-green-500 mt-5">{updateSuccess ? "Update Success":""}</p>
+      <p className="text-green-500 mt-5">
+        {updateSuccess ? "Update Success" : ""}
+      </p>
     </div>
   );
 };

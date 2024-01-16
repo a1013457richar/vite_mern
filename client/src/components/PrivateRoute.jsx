@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { Navigate, Outlet, Route } from "react-router-dom";
 
 const PrivateRoute = () => {
+  
   const { userData } = useSelector((state) => state.user);
   console.log("🚀 ~ PrivateRoute ~ userData:", userData)
   
