@@ -23,7 +23,9 @@ const Header = () => {
             ) : (
               <li>Login</li>
             )}
+            
           </Link>
+          {userData ? <Link to="/profile">Profile</Link> : <li></li>}
         </ul>
       </div>
     </div>

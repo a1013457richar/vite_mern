@@ -1,6 +1,7 @@
 import { errorHandler } from "../utils/error.js";
 import bcryptjs from "bcryptjs";
 import User from "../models/UserModel.js";
+import Listing from "../models/Listing.model.js";
 
 export const test = (req, res) => {
   res.json({ message: "Hello World" });
@@ -42,9 +43,22 @@ export const deleteUser = async (req, res, next) => {
   }
   try {
     await User.findByIdAndDelete(req.params.id);
-    res.clearCookie("access_token")
+    res.clearCookie("access_token");
     res.status(200).json({ message: "User has been deleted" });
   } catch (err) {
     return next(errorHandler(500, "Internal Server Error"));
   }
-}
+};
+
+export const getUser = async (req, res, next) => {
+  if (req.params.id === req.user.id) {
+    try {
+      const listing = await Listing.find({ userRef: req.params.id });
+      return res.status(200).json(listing); //return the listing
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    return res(errorHandler(401, "You can only get your own account"));
+  }
+};

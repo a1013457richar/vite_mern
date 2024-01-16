@@ -27,9 +27,11 @@ const Profile = () => {
   const [image, setImage] = useState(undefined);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
-  const [formData, setformData] = useState({
-  });
+  const [formData, setformData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false); //更新成功後顯示訊息
+  const [listingError, setListingError] = useState(false);
+  const [listing, setListing] = useState([]); //user的listing
+  console.log("🚀 ~ Profile ~ listing:", listing);
 
   const { userData, loading } = useSelector((state) => state.user);
 
@@ -126,6 +128,39 @@ const Profile = () => {
     }
   };
 
+  const handleListing = async () => {
+    try {
+      setListingError(false);
+      const response = await fetch(`/api/users/listing/${userData._id}`, {
+        method: "GET",
+      });
+      const data = await response.json();
+      if (data.success === false) {
+        setListingError(true);
+        return;
+      }
+      setListing(data);
+    } catch (error) {
+      setListingError(true);
+    }
+  };
+
+  const handleListingDelete = async (listingid) => {
+    try {
+      const res = await fetch(`/api/listing/delete/${listingid}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        console.log(data.message);
+        return;
+      }
+      setListing(listing.filter((item) => item._id !== listingid));
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
@@ -202,6 +237,49 @@ const Profile = () => {
       <p className="text-green-500 mt-5">
         {updateSuccess ? "Update Success" : ""}
       </p>
+      <button className="text-green-600 w-full " onClick={handleListing}>
+        Show Listing
+      </button>
+      <p className="text-red-600 mt-6">{listingError ? "Error Listing" : ""}</p>
+      {listing && listing.length > 0 && (
+        <div className="flex flex-col gap-4">
+          <h1 className="text-center mt-7 text-2xl font-semibold">
+            Your Listings
+          </h1>
+          {listing.map((listing) => (
+            <div
+              key={listing._id}
+              className="border rounded-lg p-3 flex justify-between items-center gap-4"
+            >
+              <Link to={`/listing/${listing._id}`}>
+                <img
+                  src={listing.imageUrls[0]}
+                  alt="listing cover"
+                  className="h-16 w-16 object-contain"
+                />
+              </Link>
+              <Link
+                className="text-slate-700 font-semibold  hover:underline truncate flex-1"
+                to={`/listing/${listing._id}`}
+              >
+                <p>{listing.name}</p>
+              </Link>
+
+              <div className="flex flex-col item-center">
+                <button
+                  onClick={() => handleListingDelete(listing._id)}
+                  className="text-red-700 uppercase"
+                >
+                  Delete
+                </button>
+                <Link to={`/update-listing/${listing._id}`}>
+                  <button className="text-green-700 uppercase">Edit</button>
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
