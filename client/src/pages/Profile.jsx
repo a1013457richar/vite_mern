@@ -7,16 +7,24 @@ import {
   ref,
 } from "firebase/storage";
 import { app } from "../firebase";
+import {
+  updateUserFail,
+  updateUserSuccess,
+  updateUserStart,
+} from "../redux/use/userSlice";
+import { useDispatch } from "react-redux";
 
 const Profile = () => {
+  const dispatch = useDispatch();
   const fileRef = useRef(null);
   const [image, setImage] = useState(undefined);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState("");
   const [formData, setformData] = useState({});
-  console.log("🚀 ~ Profile ~ formData:", formData);
+  const [updateSuccess, setUpdateSuccess] = useState(false); //更新成功後顯示訊息
 
-  const { userData } = useSelector((state) => state.user);
+  const { userData, loading } = useSelector((state) => state.user);
+
   useEffect(() => {
     if (image) {
       handleImageUpload(image);
@@ -47,10 +55,38 @@ const Profile = () => {
     );
   };
 
+  const handleChanges = (e) => {
+    setformData({ ...formData, [e.target.id]: e.target.value });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      const response = await fetch(`/api/users/update/${userData._id}`, {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+
+      if (data.success === false) {
+        dispatch(updateUserFail(data.message));
+        return; //就不會往下執行
+      }
+      dispatch(updateUserSuccess(data));
+      setUpdateSuccess(true);
+    } catch (error) {
+      dispatch(updateUserFail(error.message));
+    }
+  };
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
-      <form className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="file"
           ref={fileRef}
@@ -59,7 +95,7 @@ const Profile = () => {
           onChange={(e) => setImage(e.target.files[0])}
         ></input>
         <img
-          src={formData.profilePic||userData.profilePic}
+          src={formData.profilePic || userData.profilePic}
           alt="profile "
           className="h-24 w-24 self-center cursor-pointer rounded-full object-cover "
           onClick={() => fileRef.current.click()}
@@ -81,6 +117,7 @@ const Profile = () => {
           id="username"
           placeholder="Username"
           className="bg-slate-100 rounded-lg p-3"
+          onChange={handleChanges}
         ></input>
         <input
           defaultValue={userData.email}
@@ -88,21 +125,28 @@ const Profile = () => {
           id="email"
           placeholder="Email"
           className="bg-slate-100 rounded-lg p-3"
+          onChange={handleChanges}
         ></input>
         <input
           type="password"
           id="password"
           placeholder="Password"
           className="bg-slate-100 rounded-lg p-3"
+          onChange={handleChanges}
         ></input>
-        <button className="bg-slate-700 text-white rounded-lg uppercase  hover:opacity-95 disabled:opacity-30 p-3">
-          Update
+        <button
+          disabled={loading}
+          className="bg-slate-700 text-white rounded-lg uppercase  hover:opacity-95 disabled:opacity-30 p-3"
+        >
+          {loading ? "Loading..." : "Update"}
         </button>
       </form>
       <div className="flex justify-between mt-5">
         <span className="text-red-500 cursor-pointer">Delete Account</span>
         <span className="text-red-500 cursor-pointer">Sign out</span>
       </div>
+      <p className="text-red-500  mt-5">{error ? error : ""}</p>
+      <p className="text-green-500 mt-5">{updateSuccess ? "Update Success":""}</p>
     </div>
   );
 };

@@ -1,30 +1,49 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    userData: null,
-    loading: false,
-    error: false,
-    };
+  userData: null,
+  loading: false,
+  error: null,
+};
 //the name of the slice is user
 export const userSlice = createSlice({
-    name: "user",
-    initialState,
-    reducers: {
-        //actions
-        signInStart: (state) => {
-            state.loading = true;
-        },
-        signInSuccess: (state,action) => {
-            state.userData = action.payload;//從action.payload取得資料
-            state.loading = false;
-            state.error = false;
-        },
-        signInFail: (state,action) => {
-            state.loading = false;
-            state.error = action.payload;
-        },
+  name: "user",
+  initialState,
+  reducers: {
+    //actions
+    signInStart: (state) => {
+      state.loading = true;
     },
+    signInSuccess: (state, action) => {
+      state.userData = action.payload; //從action.payload取得資料
+      state.loading = false;
+      state.error = null;
+    },
+    signInFail: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    updateUserStart: (state) => {
+      state.loading = true;
+    },
+    updateUserSuccess: (state, action) => {
+      state.userData = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    updateUserFail: (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+  },
 });
 
-export const { signInStart, signInSuccess, signInFail } = userSlice.actions;
+export const {
+  signInStart,
+  signInSuccess,
+  signInFail,
+  updateUserFail,
+  updateUserSuccess,
+  updateUserStart,
+} = userSlice.actions;
 export default userSlice.reducer;

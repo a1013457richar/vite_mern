@@ -9,7 +9,6 @@ const Signin = () => {
   const [userData, setuserData] = useState({});
   //這邊就是把redux的state拿出來用，然後是取名為user
   const { loading, error } = useSelector((state) => state.user);
-  console.log("🚀 ~ Signin ~ error:", error)
   const handleChange = (e) => {
     setuserData({ ...userData, [e.target.id]: e.target.value });
   };
@@ -27,6 +26,7 @@ const Signin = () => {
         body: JSON.stringify(userData),
       });
       const data = await response.json();
+      console.log("🚀 ~ handleSubmit ~ data:", data)
       
 
       if (data.success === false) {
@@ -36,7 +36,6 @@ const Signin = () => {
       dispatch(signInSuccess(data));
       navigate("/");
     } catch (err) {
-      console.log("🚀 ~ handleSubmit ~ err:", err)
       dispatch(signInFail(err));
       
     }

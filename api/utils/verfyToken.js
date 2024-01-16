@@ -2,10 +2,9 @@ import { errorHandler } from "./error.js";
 import jwt from "jsonwebtoken";
 
 export const verfyToken = (req, res, next) => {
-  console.log(req.cookies.token);
-  const token = req.cookies.token;
-  console.log("🚀 ~ verfyToken ~ token:", token)
+  console.log(req.cookies.access_token);
 
+  const token = req.cookies.access_token;
   if (!token) {
     return next(errorHandler(401, "Not Authorized"));
   }
