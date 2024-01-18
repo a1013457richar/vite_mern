@@ -28,10 +28,12 @@ export default function UpdateListing() {
     regularPrice: 50,
     discountPrice: 0,
   });
+  console.log("🚀 ~ UpdateListing ~ formData:", formData)
   const [imageUploadError, setImageUploadError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [theloading, settheloading] = useState(false);
+  
 
   useEffect(() => {
     const fecthData = async () => {

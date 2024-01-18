@@ -49,6 +49,10 @@ const listingSchema = new mongoose.Schema(
     userRef:{
       type:String,
       required: true,
+    },
+    address:{
+      type:String,
+      required: true,
     }
 
 
