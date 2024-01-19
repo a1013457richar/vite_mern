@@ -29,6 +29,9 @@ export const updatedUser = async (req, res, next) => {
       },
       { new: true }
     );
+    if (!updateUser) {
+      return next(errorHandler(404, "User not found"));
+    }
     const { password, ...others } = updateUser._doc;
 
     res.status(200).json(others);
@@ -60,5 +63,18 @@ export const getUser = async (req, res, next) => {
     }
   } else {
     return res(errorHandler(401, "You can only get your own account"));
+  }
+};
+
+export const getUserProfile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return next(errorHandler(404, "User not found"));
+    }
+    const { password: pass, ...others } = user._doc;
+    res.status(200).json(others);
+  } catch (err) {
+    return next(errorHandler(500, "Internal Server Error"));
   }
 };

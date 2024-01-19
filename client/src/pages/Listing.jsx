@@ -5,6 +5,7 @@ import SwiperCore from 'swiper';
 import { Navigation } from 'swiper/modules';
 import 'swiper/css/bundle';
 import { useSelector } from 'react-redux';
+import Contact from '../components/Contact'
 import {
     FaBath,
     FaBed,
@@ -16,14 +17,20 @@ import {
   } from 'react-icons/fa';
 
 const Listing = () => {
-    const { currentUser } = useSelector((state) => state.user);
+    const { userData } = useSelector((state) => state.user);
     SwiperCore.use([Navigation]);
+    
     const [listing, setListing] = useState(null);
+    
+    console.log("🚀 ~ Listing ~ listing:", listing)
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const params = useParams();
     const [copied, setCopied] = useState(false);
     const [contact, setContact] = useState(false);
+    console.log("🚀 ~ Listing ~ contact:", contact)
+    
+    
     useEffect(() => {
         const fetchListing = async () => {
             try {
@@ -39,6 +46,7 @@ const Listing = () => {
                 setListing(data);
                 setLoading(false);
                 setError(false);
+               
             } catch (err) {
                 setError(true);
                 setLoading(false);
@@ -132,7 +140,7 @@ const Listing = () => {
                 {listing.furnished ? 'Furnished' : 'Unfurnished'}
               </li>
             </ul>
-            {currentUser && listing.userRef !== currentUser._id && !contact && (
+            {userData && listing.userRef !== userData._id && !contact && (
               <button
                 onClick={() => setContact(true)}
                 className='bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 p-3'
@@ -140,7 +148,7 @@ const Listing = () => {
                 Contact landlord
               </button>
             )}
-            {/* {contact && <Contact listing={listing} />} */}
+            {contact && <Contact listing={listing} />}
           </div>
         </div>
       )}

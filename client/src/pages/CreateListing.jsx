@@ -133,6 +133,7 @@ export default function CreateListing() {
         body: JSON.stringify({ ...formData, userRef: userData._id }),
       });
       const data = await response.json();
+      
       if (data.success === false) {
         setError(data.message);
         settheloading(false);
