@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ListingItem from "../components/ListingItem";
 
 const Search = () => {
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
-  console.log("🚀 ~ Search ~ listings:", listings)
+  console.log("🚀 ~ Search ~ listings:", listings);
   const navigate = useNavigate();
   const [sidebar, setSidebar] = useState({
     searchTerm: "",
@@ -77,9 +78,7 @@ const Search = () => {
       setLoading(true);
       const searchQuery = urlParams.toString();
       try {
-        const res = await fetch(
-          `/api/listing/get?${searchQuery}`,
-        );
+        const res = await fetch(`/api/listing/get?${searchQuery}`);
         const data = await res.json();
         setListings(data);
         setLoading(false);
@@ -87,7 +86,7 @@ const Search = () => {
         console.log(error);
         setLoading(false);
       }
-    }
+    };
     fetchlistings();
   }, [location.search]);
 
@@ -194,10 +193,26 @@ const Search = () => {
           </button>
         </form>
       </div>
-      <div className="">
+      <div className="flex-1">
         <h1 className="text-3xl font-semibold border-b p-3 text-slate-700 mt-5">
           Listing Results:
         </h1>
+        <div className="p-7 flex flex-wrap gap-4">
+          {!loading && listings.length === 0 && (
+            <h1 className="text-xl font-semibold  p-3 text-slate-700 ">
+              No listings found
+            </h1>
+          )}
+          {loading && (
+            <h1 className="text-xl font-semibold  p-3 text-slate-700 text-center w-full">
+              Loading...
+            </h1>
+          )}
+          {!loading && listings && listings.map((listing) => (
+            <ListingItem key={listing._id} listing={listing} />
+          ))
+          }
+        </div>
       </div>
     </div>
     //listing side
