@@ -2,10 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ListingItem from "../components/ListingItem";
 
+
 const Search = () => {
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
-  console.log("🚀 ~ Search ~ listings:", listings);
+  const [showMore, setShowMore] = useState(false);
+  console.log("🚀 ~ Search ~ showMore:", showMore)
+  
   const navigate = useNavigate();
   const [sidebar, setSidebar] = useState({
     searchTerm: "",
@@ -75,11 +78,18 @@ const Search = () => {
     }
     //fetch the data
     const fetchlistings = async () => {
+      setShowMore(false);
       setLoading(true);
       const searchQuery = urlParams.toString();
       try {
         const res = await fetch(`/api/listing/get?${searchQuery}`);
         const data = await res.json();
+        if(data.length>8){
+          setShowMore(true);
+        }
+        else{
+          setShowMore(false);
+        }
         setListings(data);
         setLoading(false);
       } catch (error) {
@@ -89,6 +99,25 @@ const Search = () => {
     };
     fetchlistings();
   }, [location.search]);
+
+  const onShowMore=async()=>{
+    const numberListings=listings.length;
+    const startIndex=numberListings;
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set("startIndex", startIndex);
+    const searchQuery = urlParams.toString();
+    try {
+      const res = await fetch(`/api/listing/get?${searchQuery}`);
+      const data = await res.json();
+      if(data.length<9){
+        setShowMore(false);
+      }
+      setListings([...listings,...data]);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
 
   return (
     //search side
@@ -212,6 +241,11 @@ const Search = () => {
             <ListingItem key={listing._id} listing={listing} />
           ))
           }
+          {showMore && (
+            <button
+            onClick={onShowMore}
+            className="text-green-700 hover:underline p-7 text-center w-full">Show more</button>)
+            }
         </div>
       </div>
     </div>
