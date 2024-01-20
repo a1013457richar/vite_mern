@@ -1,7 +1,7 @@
 # MERN Estate - Real Estate Application
 
 ## Description
-MERN Estate is a comprehensive real estate application, developed as a part of the 100 JavaScript Projects challenge. It leverages the MERN stack and Tailwind CSS, offering a modern solution for real estate listings and user interactions.
+MERN Estate is a comprehensive real estate application. It leverages the MERN stack and Tailwind CSS, offering a modern solution for real estate listings and user interactions.
 
 ## Technologies Used
 - **MongoDB**: For storing property listings and user data.
@@ -10,3 +10,9 @@ MERN Estate is a comprehensive real estate application, developed as a part of t
 - **Node.js**: JavaScript runtime for the server-side logic.
 - **Tailwind CSS**: Styling framework for a modern look.
 
+
+<p align="center">
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=git,react,vite,tailwind,mongodb,nodejs,express" />
+  </a>
+</p>
